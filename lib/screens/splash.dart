@@ -17,20 +17,24 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
 
     _alignmentAnimation = AlignmentTween(
       begin: Alignment.center,
-      end: const Alignment(0.1, -0.88),
+      end: const Alignment(0.05, -0.84),
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
     Timer(const Duration(seconds: 1), () {
+      if (!mounted) return;
       _controller.forward();
 
       Future.delayed(const Duration(seconds: 2), () {
+        if (!mounted) return;
         Navigator.pushReplacementNamed(context, '/');
       });
     });
@@ -56,28 +60,31 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: const [
             CircleAvatar(
               radius: 35,
               backgroundColor: AppColors.surface,
-              backgroundImage: const AssetImage('assets/app.png'),
+              backgroundImage: AssetImage('assets/app.png'),
             ),
-            const SizedBox(height: 7),
-            const Text(
-              '  ThreatVision  ',
+            SizedBox(height: 7),
+            Text(
+              'ThreatVision',
               style: TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: 25,
                 fontFamily: 'Silom',
               ),
+              textAlign: TextAlign.center,
             ),
-            const Text(
-              '                       .AI',
+            SizedBox(height: 2),
+            Text(
+              '.AI',
               style: TextStyle(
                 color: AppColors.textPrimary,
                 fontSize: 25,
                 fontFamily: 'Silom',
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
