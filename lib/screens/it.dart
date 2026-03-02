@@ -49,7 +49,7 @@ class _ItState extends State<It> {
       body: Column(
         children: [
           Container(
-            height: 200,
+            height: 190,
             alignment: Alignment.center,
             padding: const EdgeInsets.only(left: 16, top: 30),
             child: Column(
@@ -57,29 +57,40 @@ class _ItState extends State<It> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 35,
-                  backgroundColor: AppColors.surface,
-                  backgroundImage: const AssetImage('assets/app.png'),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 110,
+                      height: 105,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [
+                            AppColors.logo.withOpacity(0.75),
+                            AppColors.logo.withOpacity(0.35),
+                            Colors.transparent,
+                          ],
+                          stops: const [0.2, 0.72, 1],
+                        ),
+                      ),
+                    ),
+                    const CircleAvatar(
+                      radius: 35,
+                      backgroundColor: Colors.white,
+                      backgroundImage: AssetImage('assets/app.png'),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 7),
                 const Text(
-                  'ThreatVision',
+                  'A-MSSP',
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 25,
                     fontFamily: 'Silom',
                   ),
                   textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 2),
-                const Text(
-                  '.AI',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 25,
-                    fontFamily: 'Silom',
-                  ),
                 ),
               ],
             ),
@@ -172,8 +183,6 @@ class _ItState extends State<It> {
                         ],
                       ),
                       const SizedBox(height: 110),
-
-                      // ✅ Box for IT inputs
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(

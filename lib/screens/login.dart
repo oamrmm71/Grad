@@ -62,16 +62,36 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       body: Column(
         children: [
           Container(
-            height: 200,
+            height: 190,
             alignment: Alignment.center,
             padding: const EdgeInsets.only(left: 16, top: 30),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircleAvatar(
-                  radius: 35,
-                  backgroundColor: AppColors.surface,
-                  backgroundImage: const AssetImage('assets/app.png'),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 110,
+                      height: 105,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: RadialGradient(
+                          colors: [
+                            AppColors.logo.withOpacity(0.75),
+                            AppColors.logo.withOpacity(0.35),
+                            Colors.transparent,
+                          ],
+                          stops: const [0.4, 0.72, 2],
+                        ),
+                      ),
+                    ),
+                    const CircleAvatar(
+                      radius: 35,
+                      backgroundColor: Colors.white,
+                      backgroundImage: AssetImage('assets/app.png'),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 7),
                 const Text(
@@ -82,15 +102,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     fontFamily: 'Silom',
                   ),
                   textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 2),
-                const Text(
-                  '.AI',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 25,
-                    fontFamily: 'Silom',
-                  ),
                 ),
               ],
             ),
@@ -180,12 +191,10 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                           ],
                         ),
                         const SizedBox(height: 110),
-
-                        // ✅ Box for inputs
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF132E52),
+                            color: AppColors.backgroundDarker,
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
@@ -194,21 +203,11 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                                 offset: const Offset(0, 5),
                               ),
                             ],
+
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                "Manager",
-                                style: TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-
-                              // Manager Name
                               TextField(
                                 controller: managerNameController,
                                 decoration: InputDecoration(
@@ -240,8 +239,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                               const SizedBox(height: 14),
-
-                              // Manager ID
                               TextField(
                                 controller: managerIdController,
                                 decoration: InputDecoration(
@@ -273,8 +270,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                               const SizedBox(height: 14),
-
-                              // Password
                               TextField(
                                 controller: passwordController,
                                 obscureText: true,
@@ -307,7 +302,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                               const SizedBox(height: 14),
-
                               TextButton(
                                 onPressed: () {},
                                 style: TextButton.styleFrom(
@@ -317,7 +311,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                                 child: const Text("Forget Password?"),
                               ),
                               const SizedBox(height: 7),
-
                               SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
