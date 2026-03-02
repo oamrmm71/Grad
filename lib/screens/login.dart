@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:grad/core/colors/app_colors.dart';
-import 'it.dart';
+import '../core/colors/app_colors.dart';
+import '../controllers/login_controller.dart';
 import 'home.dart';
+
+enum UserRole { owner, it }
 
 class Login extends StatefulWidget {
   final bool animate;
-
   const Login({super.key, this.animate = false});
 
   @override
@@ -13,58 +14,57 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
-  final TextEditingController managerNameController = TextEditingController();
-  final TextEditingController managerIdController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  late final AnimationController _controller;
-  late final Animation<Offset> _slideAnimation;
+  final LoginController c = LoginController();
+  UserRole role = UserRole.owner;
 
   @override
   void initState() {
     super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(1, 0),
-      end: const Offset(0, 0),
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ),
-    );
-
-    if (widget.animate) {
-      _controller.forward();
-    } else {
-      _controller.value = 1;
-    }
+    c.init(vsync: this, animate: widget.animate);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
-    managerNameController.dispose();
-    managerIdController.dispose();
-    passwordController.dispose();
+    c.dispose();
     super.dispose();
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      filled: true,
+      fillColor: AppColors.surface,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.accentPurple),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.secondary, width: 1.5),
+      ),
+      hintText: hint,
+      hintStyle: const TextStyle(color: AppColors.textSecondary),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isOwner = role == UserRole.owner;
+
+    final field1Hint = isOwner ? "Manager Name" : "Engineer Name";
+    final field2Hint = isOwner ? "Manager ID" : "Engineer ID";
+
     return Scaffold(
       backgroundColor: AppColors.backgroundDarker,
       body: Column(
         children: [
+          // Top Logo Section (unchanged)
           Container(
             height: 190,
             alignment: Alignment.center,
-            padding: const EdgeInsets.only(left: 16, top: 30),
+            padding: const EdgeInsets.only(top: 40),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -78,11 +78,10 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                         shape: BoxShape.circle,
                         gradient: RadialGradient(
                           colors: [
-                            AppColors.logo.withOpacity(0.75),
-                            AppColors.logo.withOpacity(0.35),
+                            AppColors.logo.withOpacity(0.7),
+                            AppColors.logo.withOpacity(0.3),
                             Colors.transparent,
                           ],
-                          stops: const [0.4, 0.72, 2],
                         ),
                       ),
                     ),
@@ -93,7 +92,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     ),
                   ],
                 ),
-                const SizedBox(height: 7),
+                const SizedBox(height: 8),
                 const Text(
                   'A-MSSP',
                   style: TextStyle(
@@ -101,14 +100,14 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     fontSize: 25,
                     fontFamily: 'Silom',
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           ),
+
           Expanded(
             child: SlideTransition(
-              position: _slideAnimation,
+              position: c.slideAnimation,
               child: Container(
                 decoration: const BoxDecoration(
                   color: AppColors.backgroundDark,
@@ -117,234 +116,204 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     topRight: Radius.circular(30),
                   ),
                 ),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+
+                // Scrollable
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      // ✅ Smooth role switch WITHOUT changing screen
+                      _RoleSwitch(
+                        role: role,
+                        onChange: (newRole) => setState(() => role = newRole),
+                      ),
+
+                      const SizedBox(height: 40),
+
+                      // Form Card (same card, only hints change smoothly)
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundDarker,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 6),
+                            )
+                          ],
+                        ),
+                        child: Column(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: AppColors.surface,
-                                border: Border.all(color: AppColors.accentPurple),
-                              ),
-                              child: Row(
+                            // ✅ Smooth switch for the first 2 fields text/hints
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              switchInCurve: Curves.easeOut,
+                              switchOutCurve: Curves.easeIn,
+                              transitionBuilder: (child, anim) {
+                                return FadeTransition(
+                                  opacity: anim,
+                                  child: SlideTransition(
+                                    position: Tween<Offset>(
+                                      begin: const Offset(0.03, 0),
+                                      end: Offset.zero,
+                                    ).animate(anim),
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                key: ValueKey(role), // important
                                 children: [
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.primary,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(30),
-                                        bottomLeft: Radius.circular(30),
-                                      ),
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 14,
-                                        horizontal: 30,
-                                      ),
-                                      child: Text(
-                                        "Owner",
-                                        style: TextStyle(
-                                          color: AppColors.textPrimary,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
+                                  TextField(
+                                    controller: c.managerNameController,
+                                    decoration: _inputDecoration(field1Hint),
+                                    style: const TextStyle(
+                                      color: AppColors.textPrimary,
                                     ),
                                   ),
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.surface,
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(30),
-                                        bottomRight: Radius.circular(30),
-                                      ),
-                                    ),
-                                    child: TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => const It()),
-                                        );
-                                      },
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 14,
-                                          horizontal: 30,
-                                        ),
-                                        child: Text(
-                                          "IT",
-                                          style: TextStyle(
-                                            color: AppColors.textPrimary,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
+                                  const SizedBox(height: 16),
+                                  TextField(
+                                    controller: c.managerIdController,
+                                    decoration: _inputDecoration(field2Hint),
+                                    style: const TextStyle(
+                                      color: AppColors.textPrimary,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
+
+                            const SizedBox(height: 16),
+
+                            TextField(
+                              controller: c.passwordController,
+                              obscureText: true,
+                              decoration: _inputDecoration("Password"),
+                              style: const TextStyle(
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            TextButton(
+                              onPressed: () {},
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.secondary,
+                              ),
+                              child: const Text("Forget Password?"),
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  // ✅ For now: both roles go to Home
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const Home()),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  isOwner ? "Login as Owner" : "Login as IT",
+                                  style: const TextStyle(
+                                    color: AppColors.textPrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        const SizedBox(height: 110),
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: AppColors.backgroundDarker,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
-                                blurRadius: 10,
-                                offset: const Offset(0, 5),
-                              ),
-                            ],
+                      ),
 
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextField(
-                                controller: managerNameController,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: AppColors.surface,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                      color: AppColors.accentPurple,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                      color: AppColors.secondary,
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  hintText: "Manager Name",
-                                  hintStyle: const TextStyle(
-                                    color: AppColors.textSecondary,
-                                  ),
-                                ),
-                                style: const TextStyle(
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(height: 14),
-                              TextField(
-                                controller: managerIdController,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: AppColors.surface,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                      color: AppColors.accentPurple,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                      color: AppColors.secondary,
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  hintText: "Manager ID",
-                                  hintStyle: const TextStyle(
-                                    color: AppColors.textSecondary,
-                                  ),
-                                ),
-                                style: const TextStyle(
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(height: 14),
-                              TextField(
-                                controller: passwordController,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: AppColors.surface,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                      color: AppColors.accentPurple,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    borderSide: const BorderSide(
-                                      color: AppColors.secondary,
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  hintText: "Password",
-                                  hintStyle: const TextStyle(
-                                    color: AppColors.textSecondary,
-                                  ),
-                                ),
-                                style: const TextStyle(
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(height: 14),
-                              TextButton(
-                                onPressed: () {},
-                                style: TextButton.styleFrom(
-                                  alignment: Alignment.centerLeft,
-                                  foregroundColor: AppColors.secondary,
-                                ),
-                                child: const Text("Forget Password?"),
-                              ),
-                              const SizedBox(height: 7),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const Home()),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    "Login",
-                                    style: TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      const SizedBox(height: 30),
+                    ],
                   ),
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Small switch widget (smooth + no rebuild of whole screen)
+class _RoleSwitch extends StatelessWidget {
+  const _RoleSwitch({
+    required this.role,
+    required this.onChange,
+  });
+
+  final UserRole role;
+  final ValueChanged<UserRole> onChange;
+
+  @override
+  Widget build(BuildContext context) {
+    final isOwner = role == UserRole.owner;
+
+    return Container(
+      height: 46,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: AppColors.surface,
+        border: Border.all(color: AppColors.accentPurple),
+      ),
+      child: Stack(
+        children: [
+          AnimatedAlign(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOut,
+            alignment: isOwner ? Alignment.centerLeft : Alignment.centerRight,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.5 - 28,
+              margin: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+                borderRadius: BorderRadius.circular(26),
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: () => onChange(UserRole.owner),
+                  child: const Text(
+                    "Owner",
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: TextButton(
+                  onPressed: () => onChange(UserRole.it),
+                  child: const Text(
+                    "IT",
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

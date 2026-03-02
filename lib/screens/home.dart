@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:grad/core/colors/app_colors.dart';
+import '../core/colors/app_colors.dart';
 import 'login.dart';
 
 class Home extends StatefulWidget {
@@ -14,7 +14,6 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
-
       appBar: AppBar(
         backgroundColor: AppColors.primary,
         elevation: 0,
@@ -27,7 +26,6 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
-
       body: Center(
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -40,18 +38,16 @@ class _HomeState extends State<Home> {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-
           onPressed: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const Login(),
+                builder: (_) => const Login(),
               ),
             );
           },
-
           child: const Text(
-            'Go to Login',
+            'Logout',
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 16,
