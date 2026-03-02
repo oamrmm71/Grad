@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:grad/core/colors/app_colors.dart';
 import 'it.dart';
 import 'home.dart';
-
 
 class Login extends StatefulWidget {
   final bool animate;
@@ -56,7 +56,7 @@ class _LoginState extends State<Login>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE1D9BC),
+      backgroundColor: AppColors.backgroundDarker,
       body: Column(
         children: [
           Container(
@@ -68,14 +68,14 @@ class _LoginState extends State<Login>
               children: [
                 CircleAvatar(
                   radius: 35,
-                  backgroundColor: const Color(0xFFE1D9BC),
+                  backgroundColor: AppColors.surface,
                   backgroundImage: const AssetImage('assets/app.png'),
                 ),
                 const SizedBox(height: 7),
                 const Text(
                   'ThreatVision  ',
                   style: TextStyle(
-                    color: Color(0xFF0C2B4E),
+                    color: AppColors.textPrimary,
                     fontSize: 25,
                     fontFamily: 'Silom',
                   ),
@@ -84,7 +84,7 @@ class _LoginState extends State<Login>
                 const Text(
                   '                       .AI',
                   style: TextStyle(
-                    color: Color(0xFF0C2B4E),
+                    color: AppColors.textPrimary,
                     fontSize: 25,
                     fontFamily: 'Silom',
                   ),
@@ -98,7 +98,7 @@ class _LoginState extends State<Login>
               position: _slideAnimation,
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Color(0xFF0C2B4E),
+                  color: AppColors.backgroundDark,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
@@ -115,36 +115,34 @@ class _LoginState extends State<Login>
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
-                                color: Colors.grey[300],
+                                color: AppColors.surface,
+                                border: Border.all(color: AppColors.accentPurple),
                               ),
                               child: Row(
                                 children: [
                                   Container(
                                     decoration: const BoxDecoration(
-                                      color: Colors.white,
+                                      color: AppColors.primary,
                                       borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(30),
                                         bottomLeft: Radius.circular(30),
                                       ),
                                     ),
-                                    child: TextButton(
-                                      onPressed: () {},
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 14, horizontal: 30),
-                                        child: Text(
-                                          "Owner",
-                                          style: TextStyle(
-                                            color: Color(0xFF131E3A),
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                    child: const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 14, horizontal: 30),
+                                      child: Text(
+                                        "Owner",
+                                        style: TextStyle(
+                                          color: AppColors.textPrimary,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
                                   ),
                                   Container(
                                     decoration: const BoxDecoration(
-                                      color: Color(0xFFE1D9BC),
+                                      color: AppColors.surface,
                                       borderRadius: BorderRadius.only(
                                         topRight: Radius.circular(30),
                                         bottomRight: Radius.circular(30),
@@ -155,8 +153,7 @@ class _LoginState extends State<Login>
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                            const It(),
+                                            builder: (context) => const It(),
                                           ),
                                         );
                                       },
@@ -166,7 +163,7 @@ class _LoginState extends State<Login>
                                         child: Text(
                                           "IT",
                                           style: TextStyle(
-                                            color: Color(0xFF131E3A),
+                                            color: AppColors.textPrimary,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -185,7 +182,7 @@ class _LoginState extends State<Login>
                             const Text(
                               "Manager",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -194,21 +191,38 @@ class _LoginState extends State<Login>
                             TextField(
                               controller: usernameController,
                               decoration: InputDecoration(
+                                filled: true,
+                                fillColor: AppColors.surface,
                                 border: OutlineInputBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.accentPurple,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.secondary,
+                                    width: 1.5,
+                                  ),
                                 ),
                                 hintText: "James Bond",
+                                hintStyle: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 20),
                             const Text(
                               "Password",
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -218,14 +232,31 @@ class _LoginState extends State<Login>
                               controller: passwordController,
                               obscureText: true,
                               decoration: InputDecoration(
+                                filled: true,
+                                fillColor: AppColors.surface,
                                 border: OutlineInputBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.accentPurple,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: AppColors.secondary,
+                                    width: 1.5,
+                                  ),
                                 ),
                                 hintText: "............",
+                                hintStyle: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                ),
                               ),
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 14),
@@ -233,6 +264,7 @@ class _LoginState extends State<Login>
                               onPressed: () {},
                               style: TextButton.styleFrom(
                                 alignment: Alignment.topLeft,
+                                foregroundColor: AppColors.secondary,
                               ),
                               child: const Text("Forget Password?"),
                             ),
@@ -243,18 +275,22 @@ class _LoginState extends State<Login>
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => const Home()),
+                                    MaterialPageRoute(
+                                        builder: (context) => const Home()),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
+                                  backgroundColor: AppColors.primary,
                                   padding:
                                   const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
                                 child: const Text(
                                   "Login",
                                   style: TextStyle(
-                                    color: Color(0xFF131E3A),
+                                    color: AppColors.textPrimary,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

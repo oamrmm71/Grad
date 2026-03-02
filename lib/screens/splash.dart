@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:grad/core/colors/app_colors.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -8,8 +9,7 @@ class Splash extends StatefulWidget {
   State<Splash> createState() => _SplashState();
 }
 
-class _SplashState extends State<Splash>
-    with SingleTickerProviderStateMixin {
+class _SplashState extends State<Splash> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Alignment> _alignmentAnimation;
 
@@ -22,7 +22,7 @@ class _SplashState extends State<Splash>
 
     _alignmentAnimation = AlignmentTween(
       begin: Alignment.center,
-      end: Alignment(0.1, -0.88),
+      end: const Alignment(0.1, -0.88),
     ).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
@@ -45,7 +45,7 @@ class _SplashState extends State<Splash>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE1D9BC),
+      backgroundColor: AppColors.backgroundDarker,
       body: AnimatedBuilder(
         animation: _alignmentAnimation,
         builder: (context, child) {
@@ -59,14 +59,14 @@ class _SplashState extends State<Splash>
           children: [
             CircleAvatar(
               radius: 35,
-              backgroundColor: const Color(0xFFE1D9BC),
+              backgroundColor: AppColors.surface,
               backgroundImage: const AssetImage('assets/app.png'),
             ),
             const SizedBox(height: 7),
             const Text(
               '  ThreatVision  ',
               style: TextStyle(
-                color: Color(0xFF0C2B4E),
+                color: AppColors.textPrimary,
                 fontSize: 25,
                 fontFamily: 'Silom',
               ),
@@ -74,7 +74,7 @@ class _SplashState extends State<Splash>
             const Text(
               '                       .AI',
               style: TextStyle(
-                color: Color(0xFF0C2B4E),
+                color: AppColors.textPrimary,
                 fontSize: 25,
                 fontFamily: 'Silom',
               ),
