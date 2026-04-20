@@ -1,321 +1,212 @@
 import 'package:flutter/material.dart';
-import '../core/colors/app_colors.dart';
-import '../controllers/login_controller.dart';
-import 'home.dart';
+import 'package:grad/core/app_colors.dart';
 
-enum UserRole { owner, it }
-
-class Login extends StatefulWidget {
-  final bool animate;
-  const Login({super.key, this.animate = false});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
-  final LoginController c = LoginController();
-  UserRole role = UserRole.owner;
+class _LoginScreenState extends State<LoginScreen> {
+  String selectedRole = 'Manager';
 
-  @override
-  void initState() {
-    super.initState();
-    c.init(vsync: this, animate: widget.animate);
-  }
-
-  @override
-  void dispose() {
-    c.dispose();
-    super.dispose();
-  }
-
-  InputDecoration _inputDecoration(String hint) {
-    return InputDecoration(
-      filled: true,
-      fillColor: AppColors.surface,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.accentPurple),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: AppColors.secondary, width: 1.5),
-      ),
-      hintText: hint,
-      hintStyle: const TextStyle(color: AppColors.textSecondary),
+  OutlineInputBorder _greenBorder() {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: AppColors.textPrimary),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final isOwner = role == UserRole.owner;
-
-    final field1Hint = isOwner ? "Manager Name" : "Engineer Name";
-    final field2Hint = isOwner ? "Manager ID" : "Engineer ID";
-
     return Scaffold(
-      backgroundColor: AppColors.backgroundDarker,
-      body: Column(
-        children: [
-          // Top Logo Section (unchanged)
-          Container(
-            height: 190,
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(top: 40),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: 110,
-                      height: 105,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: [
-                            AppColors.logo.withOpacity(0.7),
-                            AppColors.logo.withOpacity(0.3),
-                            Colors.transparent,
-                          ],
-                        ),
+      backgroundColor: AppColors.background,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 60, bottom: 20),
+              child: Column(
+                children: [
+                  Image.asset('assets/logo.png', width: 100),
+                  const SizedBox(height: 12),
+                  const FittedBox(
+                    child: Text(
+                      'A-MSSP',
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const CircleAvatar(
-                      radius: 35,
-                      backgroundColor: Colors.white,
-                      backgroundImage: AssetImage('assets/app.png'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'A-MSSP',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 25,
-                    fontFamily: 'Silom',
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-
-          Expanded(
-            child: SlideTransition(
-              position: c.slideAnimation,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: AppColors.backgroundDark,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  ),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: AppColors.secondaryBackground,
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(40),
                 ),
-
-                // Scrollable
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
+              ),
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Row(
                     children: [
-                      // ✅ Smooth role switch WITHOUT changing screen
-                      _RoleSwitch(
-                        role: role,
-                        onChange: (newRole) => setState(() => role = newRole),
-                      ),
-
-                      const SizedBox(height: 40),
-
-                      // Form Card (same card, only hints change smoothly)
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: AppColors.backgroundDarker,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 6),
-                            )
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            // ✅ Smooth switch for the first 2 fields text/hints
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              switchInCurve: Curves.easeOut,
-                              switchOutCurve: Curves.easeIn,
-                              transitionBuilder: (child, anim) {
-                                return FadeTransition(
-                                  opacity: anim,
-                                  child: SlideTransition(
-                                    position: Tween<Offset>(
-                                      begin: const Offset(0.03, 0),
-                                      end: Offset.zero,
-                                    ).animate(anim),
-                                    child: child,
-                                  ),
-                                );
-                              },
-                              child: Column(
-                                key: ValueKey(role), // important
-                                children: [
-                                  TextField(
-                                    controller: c.managerNameController,
-                                    decoration: _inputDecoration(field1Hint),
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  TextField(
-                                    controller: c.managerIdController,
-                                    decoration: _inputDecoration(field2Hint),
-                                    style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            TextField(
-                              controller: c.passwordController,
-                              obscureText: true,
-                              decoration: _inputDecoration("Password"),
-                              style: const TextStyle(
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            TextButton(
-                              onPressed: () {},
-                              style: TextButton.styleFrom(
-                                foregroundColor: AppColors.secondary,
-                              ),
-                              child: const Text("Forget Password?"),
-                            ),
-
-                            const SizedBox(height: 10),
-
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // ✅ For now: both roles go to Home
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(builder: (_) => const Home()),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: Text(
-                                  isOwner ? "Login as Owner" : "Login as IT",
-                                  style: const TextStyle(
-                                    color: AppColors.textPrimary,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 30),
+                      Expanded(child: _roleCard('MANAGER', Icons.admin_panel_settings)),
+                      const SizedBox(width: 12),
+                      Expanded(child: _roleCard('IT', Icons.computer)),
                     ],
                   ),
-                ),
+                  const SizedBox(height: 25),
+                  _fieldTitle("ID"),
+                  _inputField(),
+                  const SizedBox(height: 15),
+                  _fieldTitle("PASSWORD"),
+                  _inputField(obscure: true),
+                  const SizedBox(height: 15),
+                  _inputActionField(
+                    icon: Icons.fingerprint,
+                    text: "SWITCH TO BIOMETRIC",
+                  ),
+                  const SizedBox(height: 15),
+                  _inputActionField(
+                    icon: Icons.login,
+                    text: "AUTHORIZE ACCESS",
+                  ),
+                  const SizedBox(height: 25),
+                  Text(
+                    'Protect By CyberGuard',
+                    style: TextStyle(
+                      color: AppColors.background,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-}
 
-// Small switch widget (smooth + no rebuild of whole screen)
-class _RoleSwitch extends StatelessWidget {
-  const _RoleSwitch({
-    required this.role,
-    required this.onChange,
-  });
+  Widget _roleCard(String title, IconData icon) {
+    final isSelected = selectedRole == title;
 
-  final UserRole role;
-  final ValueChanged<UserRole> onChange;
-
-  @override
-  Widget build(BuildContext context) {
-    final isOwner = role == UserRole.owner;
-
-    return Container(
-      height: 46,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.accentPurple),
-      ),
-      child: Stack(
-        children: [
-          AnimatedAlign(
-            duration: const Duration(milliseconds: 220),
-            curve: Curves.easeOut,
-            alignment: isOwner ? Alignment.centerLeft : Alignment.centerRight,
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.5 - 28,
-              margin: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(26),
-              ),
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedRole = title;
+        });
+      },
+      child: Container(
+        height: 80,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(12),
+          border: Border(
+            bottom: BorderSide(
+              color: isSelected ? AppColors.textPrimary : Colors.transparent,
+              width: 3,
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: () => onChange(UserRole.owner),
-                  child: const Text(
-                    "Owner",
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: AppColors.textPrimary,
+                      color: isSelected
+                          ? AppColors.textPrimary
+                          : AppColors.secondaryBackground,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-              ),
-              Expanded(
-                child: TextButton(
-                  onPressed: () => onChange(UserRole.it),
-                  child: const Text(
-                    "IT",
+                  Text(
+                    "ACCESS",
                     style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: isSelected
+                          ? AppColors.textPrimary
+                          : AppColors.secondaryBackground.withOpacity(0.6),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
+            Icon(
+              icon,
+              color: isSelected
+                  ? AppColors.textPrimary
+                  : AppColors.secondaryBackground,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _inputField({bool obscure = false}) {
+    return TextField(
+      obscureText: obscure,
+      style: const TextStyle(color: AppColors.secondaryBackground),
+      cursorColor: AppColors.textPrimary,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: AppColors.background,
+        enabledBorder: _greenBorder(),
+        focusedBorder: _greenBorder(),
+      ),
+    );
+  }
+
+  Widget _inputActionField({required IconData icon, required String text}) {
+    return Container(
+      height: 50,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Center(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: AppColors.textPrimary),
+            const SizedBox(width: 10),
+            Text(
+              text,
+              style: TextStyle(color: AppColors.textPrimary),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _fieldTitle(String text) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 6),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontWeight: FontWeight.bold,
           ),
-        ],
+        ),
       ),
     );
   }

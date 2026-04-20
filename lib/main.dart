@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'core/colors/app_colors.dart';
-import '../controllers/login_controller.dart';
+import 'core/app_colors.dart';
 import 'screens/login.dart';
 import 'screens/splash.dart';
-import 'screens/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,16 +15,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: AppColors.backgroundDarker,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.primary,
-        ),
+        scaffoldBackgroundColor: AppColors.background,
       ),
-      initialRoute: '/splash',
+      initialRoute: '/Splash',
       routes: {
-        '/splash': (context) => const Splash(),
-        '/': (context) => const Login(),
-        '/home': (context) => const Home(),
+        '/Splash': (context) => const Splash(),
+        '/LoginScreen': (context) => const LoginScreen(),
       },
     );
   }
