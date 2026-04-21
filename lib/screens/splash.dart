@@ -17,7 +17,6 @@ class _SplashState extends State<Splash> {
 
     Timer(const Duration(seconds: 2), () {
       if (!mounted) return;
-
       Navigator.pushReplacementNamed(context, '/LoginScreen');
     });
   }
@@ -50,7 +49,7 @@ class _SplashState extends State<Splash> {
                 ),
               ),
 
-              const SizedBox(height: 30),
+              const SizedBox(height: 80),
 
               const Text(
                 'Protect By CyberGuard',
