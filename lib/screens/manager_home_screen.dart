@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:grad/core/app_colors.dart';
 import 'package:grad/screens/login.dart';
+import 'package:grad/core/widgets/card_container.dart';
+import 'package:grad/core/widgets/incident_row.dart';
+import 'package:grad/core/widgets/kip_chip.dart';
 
 class ManagerHomeScreen extends StatelessWidget {
   const ManagerHomeScreen({super.key});
@@ -8,228 +11,157 @@ class ManagerHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
-
+      backgroundColor: AppColors.secondaryBackground,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: const Text(
-          "WELCOME MANAGER",
+          "A-MSSP • Manager",
           style: TextStyle(
-            color: AppColors.textSecondary,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout, color: AppColors.textSecondary),
+            icon: const Icon(Icons.logout, color: Colors.white),
             onPressed: () {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (_) => const LoginScreen()),
               );
             },
-          )
-        ],
-      ),
-
-      body: Container(
-        margin: const EdgeInsets.only(top: 10),
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          color: AppColors.secondaryBackground,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-        ),
-
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "EXECUTIVE SUMMARY",
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  physics: const NeverScrollableScrollPhysics(),
-                  childAspectRatio: 3.2,
-                  children: [
-                    _smallCard("FIREWALL BLOCKS"),
-                    _smallCard("SECURITY ALERTS"),
-                    _smallCard("SYSTEM UPDATES"),
-                    _smallCard("USER ACTIVITY"),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  children: [
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "LATEST INCIDENTS",
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    SizedBox(
-                      height: 220,
-                      child: ListView(
-                        children: [
-                          _incidentRow("Unauthorized Login", "Multiple failed attempts", "2 min ago", Colors.red),
-                          _divider(),
-                          _incidentRow("Firewall Updated", "New rules applied", "10 min ago", Colors.green),
-                          _divider(),
-                          _incidentRow("Malware Detected", "Quarantined successfully", "30 min ago", Colors.blue),
-                          _divider(),
-                          _incidentRow("User Access Changed", "Permissions updated", "1 hr ago", Colors.green),
-                          _divider(),
-                          _incidentRow("System Scan", "Completed successfully", "2 hr ago", Colors.blue),
-                          _incidentRow("Unauthorized Login", "Multiple failed attempts", "2 min ago", Colors.red),
-                          _divider(),
-                          _incidentRow("Firewall Updated", "New rules applied", "10 min ago", Colors.green),
-                          _divider(),
-                          _incidentRow("Malware Detected", "Quarantined successfully", "30 min ago", Colors.blue),
-                          _divider(),
-                          _incidentRow("User Access Changed", "Permissions updated", "1 hr ago", Colors.green),
-                          _divider(),
-                          _incidentRow("System Scan", "Completed successfully", "2 hr ago", Colors.blue),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Text(
-                  "MANAGER ACCESS IS VIEW-ONLY",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _smallCard(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.background,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: const TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
-            fontSize: 11,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _incidentRow(String title, String desc, String time, Color color) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Container(
-            width: 7,
-            height: 7,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-          ),
-
-          const SizedBox(width: 10),
-
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-                Text(
-                  desc,
-                  style: TextStyle(
-                    color: AppColors.textSecondary.withOpacity(0.6),
-                    fontSize: 10,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Text(
-            time,
-            style: TextStyle(
-              color: AppColors.textSecondary.withOpacity(0.6),
-              fontSize: 10,
-            ),
           ),
         ],
       ),
-    );
-  }
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Page title ─────────────────────────────────────────
+            const Text(
+              "Executive Summary",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
 
-  Widget _divider() {
-    return Divider(
-      color: AppColors.secondaryBackground,
-      height: 1,
+            // ── Overview KPI card ──────────────────────────────────
+            CardContainer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Overview",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  GridView.count(
+                    crossAxisCount: 2,
+                    shrinkWrap: true,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    physics: const NeverScrollableScrollPhysics(),
+                    childAspectRatio: 2.8,
+                    children: const [
+                      KpiChip(label: "Firewall Blocks", color: Colors.redAccent),
+                      KpiChip(label: "Security Alerts", color: Color(0xFFFFA726)),
+                      KpiChip(label: "System Updates",  color: Colors.blueAccent),
+                      KpiChip(label: "User Activity",   color: Colors.greenAccent),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // ── Latest Incidents card (scrollable) ─────────────────
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Latest incidents",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 260,
+                    child: ListView(
+                      children: [
+                        IncidentRow(dotColor: Colors.redAccent,   title: "Unauthorized Login",   subtitle: "Multiple failed attempts",  time: "2m ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.greenAccent, title: "Firewall Updated",      subtitle: "New rules applied",         time: "10m ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.blueAccent,  title: "Malware Detected",      subtitle: "Quarantined successfully",   time: "30m ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.greenAccent, title: "User Access Changed",   subtitle: "Permissions updated",       time: "1h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.blueAccent,  title: "System Scan",           subtitle: "Completed successfully",    time: "2h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.redAccent,   title: "Unauthorized Login",    subtitle: "Multiple failed attempts",  time: "3h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.greenAccent, title: "Firewall Updated",      subtitle: "New rules applied",         time: "4h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.blueAccent,  title: "Malware Detected",      subtitle: "Quarantined successfully",  time: "5h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.greenAccent, title: "User Access Changed",   subtitle: "Permissions updated",       time: "6h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.blueAccent,  title: "System Scan",           subtitle: "Completed successfully",    time: "7h ago"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // ── View-only notice card ──────────────────────────────
+            CardContainer(
+              child: Row(
+                children: const [
+                  Icon(Icons.lock_outline, color: Colors.white54, size: 20),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      "Manager access is view-only",
+                      style: TextStyle(
+                        color: Colors.white70,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
     );
   }
 }

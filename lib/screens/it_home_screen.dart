@@ -16,7 +16,7 @@ class ITHomeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.background,
         title: const Text(
-          "A-MSSP • IT",
+          "                            A-MSSP • IT",
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
@@ -46,6 +46,7 @@ class ITHomeScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
+
             CardContainer(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,6 +79,7 @@ class ITHomeScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 16),
+
             CardContainer(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,7 +134,14 @@ class ITHomeScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 16),
-            CardContainer(
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(15),
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -142,25 +151,31 @@ class ITHomeScreen extends StatelessWidget {
                           fontSize: 18,
                           fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12),
-                  IncidentRow(
-                    dotColor: Colors.redAccent,
-                    title: "Suspicious admin login blocked",
-                    subtitle: "Critical · DC · Contained",
-                    time: "2m ago",
-                  ),
-                  const Divider(color: Colors.white12),
-                  IncidentRow(
-                    dotColor: Colors.blueAccent,
-                    title: "Multiple failed logins",
-                    subtitle: "Medium · VPN · Resolved",
-                    time: "2m ago",
-                  ),
-                  const Divider(color: Colors.white12),
-                  IncidentRow(
-                    dotColor: Colors.greenAccent,
-                    title: "New device joined",
-                    subtitle: "Low · Printer",
-                    time: "2m ago",
+                  SizedBox(
+                    height: 260,
+                    child: ListView(
+                      children: [
+                        IncidentRow(dotColor: Colors.redAccent,   title: "Suspicious admin login blocked", subtitle: "Critical · DC · Contained",     time: "2m ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.blueAccent,  title: "Multiple failed logins",         subtitle: "Medium · VPN · Resolved",       time: "15m ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.greenAccent, title: "New device joined",              subtitle: "Low · Printer",                  time: "30m ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.redAccent,   title: "Port scan detected",             subtitle: "High · Firewall · Blocked",      time: "45m ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.orangeAccent,title: "Config change on switch",        subtitle: "Medium · Switch · Reviewing",    time: "1h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.blueAccent,  title: "VPN tunnel re-established",      subtitle: "Low · VPN · Resolved",           time: "2h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.redAccent,   title: "Brute force attempt",            subtitle: "Critical · SSH · Blocked",       time: "3h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.greenAccent, title: "Firmware updated",               subtitle: "Low · Router · Completed",       time: "4h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.orangeAccent,title: "Unusual outbound traffic",       subtitle: "High · Server · Investigating",  time: "5h ago"),
+                        const Divider(color: Colors.white12),
+                        IncidentRow(dotColor: Colors.blueAccent,  title: "Certificate renewed",            subtitle: "Low · Web Server · Completed",   time: "6h ago"),
+                      ],
+                    ),
                   ),
                 ],
               ),
